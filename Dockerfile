@@ -20,9 +20,15 @@ RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
 # Install Claude Code CLI globally
 RUN npm install -g @anthropic-ai/claude-code
 
+# Prepare directories owned by node user
+RUN mkdir -p /usercontent /home/node/.claude \
+    && chown -R node:node /usercontent /home/node/.claude
+
 WORKDIR /runner
 COPY ./scripts ./
 
 RUN chmod +x /runner/*.sh
+
+USER node
 
 ENTRYPOINT ["/runner/entrypoint.sh"]
