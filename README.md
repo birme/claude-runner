@@ -30,6 +30,7 @@ Built for [Eyevinn Open Source Cloud](https://www.osaas.io).
 | `ALLOWEDTOOLS` | Comma-separated list of allowed tools |
 | `DISALLOWEDTOOLS` | Comma-separated list of disallowed tools |
 | `SUB_PATH` | Subdirectory within the repo to use as working directory |
+| `OSC_ACCESS_TOKEN` | Open Source Cloud access token. When set, configures an MCP server (HTTP transport) for [OSC](https://www.osaas.io) at `https://mcp.osaas.io/mcp` |
 
 ## Usage
 

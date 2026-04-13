@@ -118,7 +118,30 @@ if [ -n "${GITHUB_TOKEN:-}" ]; then
 fi
 
 # ------------------------------------------------------------------
-# 4. Build the Claude command
+# 4. Configure OSC MCP server (if token available)
+# ------------------------------------------------------------------
+
+if [ -n "${OSC_ACCESS_TOKEN:-}" ]; then
+  echo "Configuring OSC MCP server..."
+  mkdir -p "${HOME}/.claude"
+  cat > "${HOME}/.claude/settings.json" <<MCPEOF
+{
+  "mcpServers": {
+    "OSC": {
+      "type": "http",
+      "url": "https://mcp.osaas.io/mcp",
+      "headers": {
+        "Authorization": "Bearer ${OSC_ACCESS_TOKEN}"
+      }
+    }
+  }
+}
+MCPEOF
+  echo "OSC MCP server configured (https://mcp.osaas.io/mcp)"
+fi
+
+# ------------------------------------------------------------------
+# 5. Build the Claude command
 # ------------------------------------------------------------------
 
 CLAUDE_ARGS=("--print" "--dangerously-skip-permissions")
@@ -140,7 +163,7 @@ if [ -n "${DISALLOWEDTOOLS}" ]; then
 fi
 
 # ------------------------------------------------------------------
-# 5. Run the Claude session
+# 6. Run the Claude session
 # ------------------------------------------------------------------
 
 echo ""
