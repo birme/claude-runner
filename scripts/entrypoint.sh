@@ -196,7 +196,7 @@ fi
 
 CLAUDE_ARGS=("--print" "--dangerously-skip-permissions")
 
-if [ "${VERBOSE:-}" = "1" ] || [ "${VERBOSE:-}" = "true" ]; then
+if [ "${VERBOSE:-1}" != "0" ] && [ "${VERBOSE:-1}" != "false" ]; then
   CLAUDE_ARGS+=("--verbose")
 fi
 
