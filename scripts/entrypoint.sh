@@ -200,6 +200,13 @@ if [ "${VERBOSE:-1}" != "0" ] && [ "${VERBOSE:-1}" != "false" ]; then
   CLAUDE_ARGS+=("--verbose")
 fi
 
+# Switch from text output to the JSONL event stream (tool calls,
+# tool results, intermediate assistant turns). Requires --verbose
+# in --print mode, which is already on by default above.
+if [ "${STREAM_JSON:-}" = "1" ] || [ "${STREAM_JSON:-}" = "true" ]; then
+  CLAUDE_ARGS+=("--output-format" "stream-json")
+fi
+
 if [ -n "${MODEL}" ]; then
   CLAUDE_ARGS+=("--model" "${MODEL}")
 fi

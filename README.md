@@ -29,7 +29,8 @@ Built for [Eyevinn Open Source Cloud](https://www.osaas.io).
 | `MAX_TURNS` | Maximum number of agentic turns |
 | `ALLOWEDTOOLS` | Comma-separated list of allowed tools |
 | `DISALLOWEDTOOLS` | Comma-separated list of disallowed tools |
-| `VERBOSE` | Verbose logging (tool calls, intermediate turns). Enabled by default. Set to `0` or `false` to disable. |
+| `VERBOSE` | Verbose logging. Enabled by default. Set to `0` or `false` to disable. Note: visible effect only applies together with `STREAM_JSON=1`; with the default text output format, `--verbose` is a no-op. |
+| `STREAM_JSON` | Set to `1` or `true` to switch output to `stream-json` (JSONL). Emits one JSON event per line: `system` init, `assistant` messages, `tool_use`, `tool_result`, final `result`. Ideal for structured logging and debugging headless sessions. Changes stdout format away from plain text. |
 | `SUB_PATH` | Subdirectory within the repo to use as working directory |
 | `CONFIG_SVC` | Name of an OSC Application Config Service instance. When set together with `OSC_ACCESS_TOKEN`, environment variables are loaded from the config service before the Claude session starts |
 | `OSC_ACCESS_TOKEN` | Open Source Cloud access token. Enables the OSC MCP server and config service integration |
