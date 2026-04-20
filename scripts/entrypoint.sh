@@ -103,6 +103,11 @@ fi
 cd "${WORK_DIR}"
 echo "Working directory: $(pwd)"
 
+# Set a git identity so Claude can commit without having to run git config mid-session.
+git config user.email "agent@claude.ai"
+git config user.name "Claude Agent"
+echo "Git identity set: Claude Agent <agent@claude.ai>"
+
 # Show repo info
 if [ -f "CLAUDE.md" ]; then
   echo "Found CLAUDE.md in repository."
@@ -261,5 +266,26 @@ echo ""
 echo "=== Claude session ended ==="
 echo "Exit code: ${EXIT_CODE}"
 echo "Finished at $(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+
+# ------------------------------------------------------------------
+# 8. Auto-push any local commits Claude made but did not push
+# ------------------------------------------------------------------
+# Only auto-push on a clean Claude exit to avoid pushing partial/broken state.
+if [ "${EXIT_CODE}" = "0" ]; then
+  cd "${WORK_DIR}"
+  CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")
+  if [ -n "${CURRENT_BRANCH}" ] && [ "${CURRENT_BRANCH}" != "HEAD" ]; then
+    UNPUSHED=$(git log --oneline "@{u}..HEAD" 2>/dev/null | wc -l | tr -d ' ')
+    if [ -n "${UNPUSHED}" ] && [ "${UNPUSHED}" != "0" ]; then
+      echo ""
+      echo "=== Auto-pushing ${UNPUSHED} local commit(s) to origin/${CURRENT_BRANCH} ==="
+      if git push origin "${CURRENT_BRANCH}" 2>&1; then
+        echo "Push succeeded."
+      else
+        echo "WARNING: git push failed — commits remain local to this container." >&2
+      fi
+    fi
+  fi
+fi
 
 exit ${EXIT_CODE}
