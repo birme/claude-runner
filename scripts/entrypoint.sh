@@ -145,7 +145,12 @@ if [ -n "${OSC_ACCESS_TOKEN:-}" ] && [ -n "${CONFIG_SVC:-}" ]; then
   fi
 
   echo "[CONFIG] Loading environment variables from config service '${CONFIG_SVC}'"
-  config_env_output=$(npx -y @osaas/cli@latest web config-to-env --env "${OSC_ENV:-prod}" "${CONFIG_SVC}" 2>&1) || true
+  CONFIG_API_KEY_ARGS=()
+  if [ -n "${CONFIG_API_KEY:-}" ]; then
+    echo "[CONFIG] Using config API key for secret decryption"
+    CONFIG_API_KEY_ARGS=("--config-api-key" "${CONFIG_API_KEY}")
+  fi
+  config_env_output=$(npx -y @osaas/cli@latest web config-to-env --env "${OSC_ENV:-prod}" "${CONFIG_API_KEY_ARGS[@]+"${CONFIG_API_KEY_ARGS[@]}"}" "${CONFIG_SVC}" 2>&1) || true
   config_exit=$?
   if [ ${config_exit} -eq 0 ]; then
     # Only eval lines that are valid shell export statements
